@@ -10,35 +10,53 @@ module.exports = {
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
 
+    // OFF
     if (args[0] === "off") {
       await threadsData.set(threadID, { enable: false }, "groupNameLock");
       return api.sendMessage("🔓 Group name lock disabled.", threadID);
     }
 
+    // INVALID
     if (args[0] !== "on") {
-      return api.sendMessage("Usage: groupnamelock on <name>", threadID);
+      return api.sendMessage(
+        "Usage: groupnamelock on <name>",
+        threadID
+      );
     }
 
+    // NAME
     const lockName = args.slice(1).join(" ").trim();
     if (!lockName) {
-      return api.sendMessage("❌ Please provide a group name.", threadID);
+      return api.sendMessage(
+        "❌ Please provide a group name.",
+        threadID
+      );
     }
 
-    await api.setTitle(lockName, threadID);
+    // CHANGE NAME (CORRECT API)
+    await api.changeThreadName(lockName, threadID);
+
+    // SAVE
     await threadsData.set(threadID, {
       enable: true,
       name: lockName
     }, "groupNameLock");
 
-    api.sendMessage(`🔒 Group name locked to:\n${lockName}`, threadID);
+    api.sendMessage(
+      `🔒 Group name locked to:\n${lockName}`,
+      threadID
+    );
   },
 
   onEvent: async function ({ api, event, threadsData }) {
     if (event.logMessageType !== "log:thread-name") return;
 
-    const lockData = await threadsData.get(event.threadID, "groupNameLock");
-    if (!lockData?.enable || !lockData.name) return;
+    const threadID = event.threadID;
+    const lockData = await threadsData.get(threadID, "groupNameLock");
 
-    await api.setTitle(lockData.name, event.threadID);
+    if (!lockData || !lockData.enable || !lockData.name) return;
+
+    // RE-APPLY LOCK
+    await api.changeThreadName(lockData.name, threadID);
   }
 };
