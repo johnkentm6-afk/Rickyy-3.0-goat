@@ -1,9 +1,11 @@
 module.exports = {
-  name: "nicknamelock",
-  role: 2,
-  description: "Lock nickname",
-  category: "UTILITY",
-  usage: "nicknamelock on <nickname> | off",
+  config: {
+    name: "nicknamelock",
+    role: 2,
+    category: "utility",
+    description: "Lock nickname",
+    usage: "nicknamelock on <nickname> | off"
+  },
 
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
@@ -36,15 +38,14 @@ module.exports = {
   onEvent: async function ({ api, event, threadsData }) {
     if (event.logMessageType !== "log:user-nickname") return;
 
-    const threadID = event.threadID;
-    const lockData = await threadsData.get(threadID, "nicknameLock");
-
+    const lockData = await threadsData.get(event.threadID, "nicknameLock");
     if (!lockData?.enable) return;
+
     if (event.logMessageData?.participant_id !== lockData.userID) return;
 
     await api.changeNickname(
       lockData.nickname,
-      threadID,
+      event.threadID,
       lockData.userID
     );
   }
