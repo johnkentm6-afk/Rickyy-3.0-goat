@@ -33,8 +33,8 @@ module.exports = {
       );
     }
 
-    // CHANGE NAME (CORRECT API)
-    await api.changeThreadName(lockName, threadID);
+    // ✅ CHANGE NAME (AUTO-DETECT)
+    await changeGroupName(api, lockName, threadID);
 
     // SAVE
     await threadsData.set(threadID, {
@@ -54,9 +54,26 @@ module.exports = {
     const threadID = event.threadID;
     const lockData = await threadsData.get(threadID, "groupNameLock");
 
-    if (!lockData || !lockData.enable || !lockData.name) return;
+    if (!lockData?.enable || !lockData.name) return;
 
-    // RE-APPLY LOCK
-    await api.changeThreadName(lockData.name, threadID);
+    // RE-LOCK
+    await changeGroupName(api, lockData.name, threadID);
   }
 };
+
+// 🔧 UNIVERSAL GROUP NAME CHANGER
+async function changeGroupName(api, name, threadID) {
+  if (typeof api.setThreadName === "function") {
+    return api.setThreadName(name, threadID);
+  }
+
+  if (typeof api.setTitle === "function") {
+    return api.setTitle(name, threadID);
+  }
+
+  if (typeof api.changeThreadName === "function") {
+    return api.changeThreadName(name, threadID);
+  }
+
+  throw new Error("No supported method to change group name.");
+}
