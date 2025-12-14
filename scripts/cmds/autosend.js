@@ -22,7 +22,7 @@ module.exports = {
     ];
 
     const START_DELAY_MS = 5000;      // 5 seconds before start
-    const BETWEEN_MSG_DELAY_MS = 1000; // 1 second per message
+    const BETWEEN_MSG_DELAY_MS = 5000; // 5 seconds per message
     const LOOPS = 5;
 
     // 🛑 STOP
