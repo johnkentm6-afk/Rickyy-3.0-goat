@@ -1,6 +1,6 @@
 module.exports = {
   name: "groupnamelock",
-  role: 2, // admin only
+  role: 2,
   description: "Lock group name",
   usage: "groupnamelock on (name) | off",
 
