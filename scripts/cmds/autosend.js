@@ -4,7 +4,7 @@ module.exports = {
   config: {
     name: "autosend",
     version: "1.1",
-    role: 0,
+    role: 2,
     author: "You + ChatGPT",
     description: "Auto send messages with start/stop trigger",
     category: "UTILITY",
