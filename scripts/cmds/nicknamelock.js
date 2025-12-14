@@ -2,6 +2,7 @@ module.exports = {
   name: "nicknamelock",
   role: 2,
   description: "Lock nickname",
+  category: "UTILITY",
   usage: "nicknamelock on (nickname) | off",
 
   onStart: async function ({ api, event, args, threadsData }) {
