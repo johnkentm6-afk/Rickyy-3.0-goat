@@ -2,6 +2,7 @@ module.exports = {
   name: "groupnamelock",
   role: 2,
   description: "Lock group name",
+  category: "UTILITY",
   usage: "groupnamelock on (name) | off",
 
   onStart: async function ({ api, event, args, threadsData }) {
