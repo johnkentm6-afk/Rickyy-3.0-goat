@@ -15,7 +15,8 @@
   "nickNameBot": "Rickyy",
   "prefix": "&",
   "adminOnly": {
-    "enable" false,
+    "enable": false,
+    "ignoreCommand": []
   },
   "adminBot": [
     "61581956827969"
