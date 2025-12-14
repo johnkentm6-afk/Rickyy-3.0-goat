@@ -1,52 +1,55 @@
 module.exports = {
   config: {
-    name: "nicknamelock",
+    name: "nicknamelockall",
     role: 2,
     category: "utility",
-    description: "Lock nickname",
-    usage: "nicknamelock on <nickname> | off"
+    description: "Lock nicknames of all members",
+    usage: "nicknamelockall on | off"
   },
 
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
-    const userID = event.senderID;
 
+    // OFF
     if (args[0] === "off") {
-      await threadsData.set(threadID, { enable: false }, "nicknameLock");
-      return api.sendMessage("🔓 Nickname lock disabled.", threadID);
+      await threadsData.set(threadID, { enable: false }, "nicknameLockAll");
+      return api.sendMessage("🔓 Nickname lock (all users) disabled.", threadID);
     }
 
-    if (args[0] !== "on") {
-      return api.sendMessage("Usage: nicknamelock on <nickname>", threadID);
+    // ON
+    const threadInfo = await api.getThreadInfo(threadID);
+    const members = threadInfo.participantIDs;
+
+    const nicknames = {};
+    for (const uid of members) {
+      nicknames[uid] = threadInfo.nicknames?.[uid] || "";
     }
 
-    const nickname = args.slice(1).join(" ").trim();
-    if (!nickname) {
-      return api.sendMessage("❌ Please provide a nickname.", threadID);
-    }
-
-    await api.changeNickname(nickname, threadID, userID);
     await threadsData.set(threadID, {
       enable: true,
-      nickname,
-      userID
-    }, "nicknameLock");
+      nicknames
+    }, "nicknameLockAll");
 
-    api.sendMessage(`🔒 Nickname locked to:\n${nickname}`, threadID);
+    api.sendMessage(
+      "🔒 Nicknames of all members are now locked.",
+      threadID
+    );
   },
 
   onEvent: async function ({ api, event, threadsData }) {
     if (event.logMessageType !== "log:user-nickname") return;
 
-    const lockData = await threadsData.get(event.threadID, "nicknameLock");
-    if (!lockData?.enable) return;
+    const threadID = event.threadID;
+    const data = await threadsData.get(threadID, "nicknameLockAll");
 
-    if (event.logMessageData?.participant_id !== lockData.userID) return;
+    if (!data?.enable) return;
 
-    await api.changeNickname(
-      lockData.nickname,
-      event.threadID,
-      lockData.userID
-    );
+    const uid = event.logMessageData?.participant_id;
+    if (!uid) return;
+
+    const lockedNick = data.nicknames[uid] ?? "";
+
+    // REVERT
+    await api.changeNickname(lockedNick, threadID, uid);
   }
 };
