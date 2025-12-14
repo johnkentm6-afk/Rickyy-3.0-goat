@@ -6,7 +6,7 @@ module.exports = {
 		name: "help",
 		aliases: ["menu", "commands"],
 		version: "4.8",
-		author: "NeoKEX",
+		author: "Rickyy",
 		shortDescription: "Show all available commands",
 		longDescription: "Displays a clean and premium-styled categorized list of commands.",
 		category: "system",
@@ -58,7 +58,7 @@ module.exports = {
 				shortDescription,
 				longDescription,
 				aliases,
-				role 
+				role
 			} = cmd.config;
 
 			const desc =
@@ -89,7 +89,7 @@ module.exports = {
 		const formatCommands = (cmds) =>
 			cmds.sort().map((cmd) => `× ${cmd}`);
 
-		let msg = `━━━☠️ 𝗡𝗲𝗼𝗞𝗘𝗫 𝗔𝗜 ☠️━━━\n`;
+		let msg = `━━━☠️ Rickyy On Top ☠️━━━\n`;
 		const sortedCategories = Object.keys(categories).sort();
 		for (const cat of sortedCategories) {
 			const emoji = emojiMap[cat] || "➥";
@@ -97,7 +97,7 @@ module.exports = {
 			msg += `${formatCommands(categories[cat]).join(' ')}\n`; 
 			msg += `╰────────────◊\n`;
 		}
-		msg += `\n➥ Use: ${prefix}help [command name] for details\n➥Use: ${prefix}callad to talk with bot admins '_'`;
+		msg += `\n➥ Use: ${prefix}help [command name] for details\n➥Use: ${prefix} ☠️Rickyy on top☠️ '_'`;
 
 		return message.reply(msg);
 	}
