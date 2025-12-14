@@ -1,14 +1,14 @@
-if (!global.autoSendIntervals) global.autoSendIntervals = {};
+if (!global.attackIntervals) global.attackIntervals = {};
 
 module.exports = {
   config: {
-    name: "autosend",
-    version: "1.1",
+    name: "attack",
+    version: "1.0",
     role: 2,
     author: "You + ChatGPT",
-    description: "Auto send messages with start/stop trigger",
+    description: "Continuous auto message attack until stopped",
     category: "UTILITY",
-    usages: "autosend start | autosend stop",
+    usages: "attack on | attack off",
     cooldowns: 3
   },
 
@@ -23,52 +23,37 @@ module.exports = {
       "wala ka mama"
     ];
 
-    const START_DELAY_MS = 1000;      // 1 second before start
-    const BETWEEN_MSG_DELAY_MS = 5000; // 5 seconds per message
-    const LOOPS = 5;
+    const BETWEEN_MSG_DELAY_MS = 1500; // adjust if gusto mo mas mabilis
 
-    // 🛑 STOP
-    if (action === "stop") {
-      if (global.autoSendIntervals[threadID]) {
-        clearInterval(global.autoSendIntervals[threadID]);
-        delete global.autoSendIntervals[threadID];
+    // 🛑 OFF — HINTO LANG PAG IKAW NAG-SABI
+    if (action === "off") {
+      if (global.attackIntervals[threadID]) {
+        clearInterval(global.attackIntervals[threadID]);
+        delete global.attackIntervals[threadID];
       }
       return; // silent
     }
 
-    // ▶️ START
-    if (action === "start") {
-      if (global.autoSendIntervals[threadID]) return; // already running
+    // ▶️ ON
+    if (action === "on") {
+      if (global.attackIntervals[threadID]) return; // already running
 
-      let loopCount = 0;
       let msgIndex = 0;
 
-      // delay before starting
-      setTimeout(() => {
-        const interval = setInterval(async () => {
-          try {
-            await message.send(messages[msgIndex]);
-            msgIndex++;
+      const interval = setInterval(async () => {
+        try {
+          await message.send(messages[msgIndex]);
+          msgIndex++;
 
-            if (msgIndex >= messages.length) {
-              msgIndex = 0;
-              loopCount++;
-            }
-
-            // stop after loops finished
-            if (loopCount >= LOOPS) {
-              clearInterval(interval);
-              delete global.autoSendIntervals[threadID];
-            }
-          } catch (e) {
-            clearInterval(interval);
-            delete global.autoSendIntervals[threadID];
+          if (msgIndex >= messages.length) {
+            msgIndex = 0; // loop forever
           }
-        }, BETWEEN_MSG_DELAY_MS);
+        } catch (err) {
+          // ❗ kahit mag-error, tuloy pa rin hangga't di mo sinasabi off
+        }
+      }, BETWEEN_MSG_DELAY_MS);
 
-        global.autoSendIntervals[threadID] = interval;
-      }, START_DELAY_MS);
-
+      global.attackIntervals[threadID] = interval;
       return; // silent
     }
   }
