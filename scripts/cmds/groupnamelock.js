@@ -3,18 +3,18 @@ module.exports = {
   role: 2,
   description: "Lock group name",
   category: "UTILITY",
-  usage: "groupnamelock on (name) | off",
+  usage: "groupnamelock on <name> | off",
 
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
 
     if (args[0] === "off") {
-      await threadsData.set(threadID, false, "groupNameLock.enable");
+      await threadsData.set(threadID, { enable: false }, "groupNameLock");
       return api.sendMessage("🔓 Group name lock disabled.", threadID);
     }
 
     if (args[0] !== "on") {
-      return api.sendMessage("Usage: groupnamelock on (name)", threadID);
+      return api.sendMessage("Usage: groupnamelock on <name>", threadID);
     }
 
     const lockName = args.slice(1).join(" ").trim();
@@ -37,7 +37,7 @@ module.exports = {
     const threadID = event.threadID;
     const lockData = await threadsData.get(threadID, "groupNameLock");
 
-    if (!lockData || !lockData.enable) return;
+    if (!lockData?.enable || !lockData.name) return;
 
     await api.setTitle(lockData.name, threadID);
   }
