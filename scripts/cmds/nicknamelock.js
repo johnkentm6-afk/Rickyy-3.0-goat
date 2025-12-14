@@ -1,6 +1,6 @@
 module.exports = {
   name: "nicknamelock",
-  role: 2, // admin only
+  role: 2,
   description: "Lock nickname",
   usage: "nicknamelock on (nickname) | off",
 
