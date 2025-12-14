@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "yakultcutex@gmail.com",
-    "password": "mirosofinex",
+    "email": "naciam16@yahoo.com",
+    "password": "rickyyontopbitch",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -116,7 +116,7 @@
     "adminOnly": false,
     "threadBanned": false,
     "userBanned": false,
-    "needRoleToUseCmd": false,
+    "needRoleToUseCmd": true,
     "needRoleToUseCmdOnReply": false,
     "needRoleToUseCmdOnReaction": false
   },
