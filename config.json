@@ -15,7 +15,7 @@
   "nickNameBot": "Rickyy",
   "prefix": "&",
   "adminOnly": {
-    "enable": false,
+    "enable": true,
     "ignoreCommand": []
   },
   "adminBot": [
@@ -30,9 +30,8 @@
   "notes_premiumUsers": "List of user IDs with premium access (role 3)",
   "notes_devUsers": "List of developer IDs with full access (role 4)",
   "whiteListMode": {
-    "enable": false,
+    "enable": true,
     "whiteListIds": [
-      "61581956827969",
       "61581956827969"
     ],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
