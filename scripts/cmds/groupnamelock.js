@@ -10,13 +10,13 @@ module.exports = {
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
 
-    // OFF
+    // OFF - Unlock group name
     if (args[0] === "off") {
       await threadsData.set(threadID, { enable: false }, "groupNameLock");
       return api.sendMessage("🔓 Group name lock disabled.", threadID);
     }
 
-    // INVALID
+    // INVALID - If the command is not 'on'
     if (args[0] !== "on") {
       return api.sendMessage(
         "Usage: groupnamelock on <name>",
@@ -24,7 +24,7 @@ module.exports = {
       );
     }
 
-    // NAME
+    // NAME - Get the group name to lock
     const lockName = args.slice(1).join(" ").trim();
     if (!lockName) {
       return api.sendMessage(
@@ -33,17 +33,18 @@ module.exports = {
       );
     }
 
-    // ✅ CHANGE NAME (AUTO-DETECT)
+    // CHANGE NAME (TRYING TO AUTO-DETECT SUPPORTED METHODS)
     await changeGroupName(api, lockName, threadID);
 
-    // SAVE
+    // SAVE LOCKED NAME TO DATABASE
     await threadsData.set(threadID, {
       enable: true,
       name: lockName
     }, "groupNameLock");
 
+    // CONFIRMATION MESSAGE
     api.sendMessage(
-      `🔒 Group name locked to:\n${lockName}`,
+      `🔒 Group name locked to: ${lockName}`,
       threadID
     );
   },
@@ -56,24 +57,41 @@ module.exports = {
 
     if (!lockData?.enable || !lockData.name) return;
 
-    // RE-LOCK
+    // RE-LOCK THE NAME IF CHANGES ARE DETECTED
     await changeGroupName(api, lockData.name, threadID);
   }
 };
 
-// 🔧 UNIVERSAL GROUP NAME CHANGER
+// 🔧 UNIVERSAL GROUP NAME CHANGER WITH ERROR HANDLING
 async function changeGroupName(api, name, threadID) {
-  if (typeof api.setThreadName === "function") {
-    return api.setThreadName(name, threadID);
-  }
+  try {
+    // Log available methods for debugging purposes
+    console.log("Available API methods:", Object.keys(api));
 
-  if (typeof api.setTitle === "function") {
-    return api.setTitle(name, threadID);
-  }
+    // Check for different methods to change the group name
+    if (typeof api.setThreadName === "function") {
+      console.log("Using setThreadName method");
+      return api.setThreadName(name, threadID);
+    }
 
-  if (typeof api.changeThreadName === "function") {
-    return api.changeThreadName(name, threadID);
-  }
+    if (typeof api.setTitle === "function") {
+      console.log("Using setTitle method");
+      return api.setTitle(name, threadID);
+    }
 
-  throw new Error("No supported method to change group name.");
+    if (typeof api.changeThreadName === "function") {
+      console.log("Using changeThreadName method");
+      return api.changeThreadName(name, threadID);
+    }
+
+    // If no method is supported, throw an error with a helpful message
+    throw new Error("No supported method to change group name. Please check the API documentation.");
+  } catch (error) {
+    console.error(`Error in changeGroupName: ${error.message}`);
+    // Notify the user if there's an issue
+    api.sendMessage(
+      `❌ Failed to lock the group name: ${error.message}`,
+      threadID
+    );
+  }
 }
