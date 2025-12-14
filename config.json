@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "yakultcutex@gmail.com",
-    "password": "mirosofinex",
+    "email": "naciam@yahoo.com",
+    "password": "rickyyontopbitch",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -19,13 +19,16 @@
     "ignoreCommand": []
   },
   "adminBot": [
-    "61581956827969"
+    "61581956827969",
+    "61584640211722"
   ],
   "premiumUsers": [
-    "61581956827969"
+    "61581956827969",
+    "61584640211722"
   ],
   "devUsers": [
-    "61581956827969"
+    "61581956827969",
+    "61584640211722"
   ],
   "notes_premiumUsers": "List of user IDs with premium access (role 3)",
   "notes_devUsers": "List of developer IDs with full access (role 4)",
