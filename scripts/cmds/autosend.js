@@ -9,7 +9,7 @@ module.exports = {
     description: "Continuous auto message attack until stopped",
     category: "UTILITY",
     usages: "attack on | attack off",
-    cooldowns: 3
+    cooldowns: 5
   },
 
   onStart: async function ({ message, event, args }) {
@@ -23,7 +23,7 @@ module.exports = {
       "wala ka mama"
     ];
 
-    const BETWEEN_MSG_DELAY_MS = 1500; // adjust if gusto mo mas mabilis
+    const BETWEEN_MSG_DELAY_MS = 5000; // adjust if gusto mo mas mabilis
 
     // 🛑 OFF — HINTO LANG PAG IKAW NAG-SABI
     if (action === "off") {
