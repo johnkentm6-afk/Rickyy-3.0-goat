@@ -19,7 +19,7 @@ function handleCommand(command, sendMessage) {
     attackInterval = setInterval(() => {
       sendMessage(messages[msgIndex]);
       msgIndex = (msgIndex + 1) % messages.length;
-    }, 1000); // 5 second delay
+    }, 1000); // 1 second delay
   }
 
   if (command === "&stop") {
