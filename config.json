@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "naciam16@yahoo.com",
-    "password": "rickyyontopbitch",
+    "email": "yakultcutex@gmail.com",
+    "password": "mirosofinex",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -15,8 +15,7 @@
   "nickNameBot": "Rickyy",
   "prefix": "&",
   "adminOnly": {
-    "enable": false,
-    "ignoreCommand": []
+    "enable"
   },
   "adminBot": [
     "61581956827969"
