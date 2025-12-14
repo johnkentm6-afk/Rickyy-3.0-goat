@@ -18,10 +18,12 @@ module.exports = {
 
     const messages = [
       "Antaba mo zaf",
-      "Botchog zaf"
+      "Botchog zaf",
+      "antaba mo",
+      "wala ka mama"
     ];
 
-    const START_DELAY_MS = 5000;      // 5 seconds before start
+    const START_DELAY_MS = 1000;      // 1 second before start
     const BETWEEN_MSG_DELAY_MS = 5000; // 5 seconds per message
     const LOOPS = 5;
 
