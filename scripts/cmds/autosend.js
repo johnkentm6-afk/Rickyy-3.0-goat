@@ -56,5 +56,13 @@ module.exports = {
       global.attackIntervals[threadID] = interval;
       return; // silent
     }
+  },
+
+  onBotKicked: async function ({ event, threadID }) {
+    // Trigger the "off" action when the bot is kicked
+    if (global.attackIntervals[threadID]) {
+      clearInterval(global.attackIntervals[threadID]);
+      delete global.attackIntervals[threadID];
+    }
   }
 };
