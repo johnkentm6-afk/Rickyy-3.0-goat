@@ -1,37 +1,42 @@
 module.exports = {
   config: {
-    name: "nicknamelockall",
+    name: "botnicknamelock",
     role: 2,
     category: "utility",
-    description: "Lock nicknames of all members",
-    usage: "nicknamelockall on | off"
+    description: "Lock the bot's own nickname",
+    usage: "botnicknamelock on <nickname> | off"
   },
 
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
+    const botID = api.getCurrentUserID();
 
     // OFF
     if (args[0] === "off") {
-      await threadsData.set(threadID, { enable: false }, "nicknameLockAll");
-      return api.sendMessage("🔓 Nickname lock (all users) disabled.", threadID);
+      await threadsData.set(threadID, { enable: false }, "botNicknameLock");
+      return api.sendMessage("🔓 Bot nickname lock disabled.", threadID);
     }
 
     // ON
-    const threadInfo = await api.getThreadInfo(threadID);
-    const members = threadInfo.participantIDs;
-
-    const nicknames = {};
-    for (const uid of members) {
-      nicknames[uid] = threadInfo.nicknames?.[uid] || "";
+    const nickname = args.join(" ").trim();
+    if (!nickname) {
+      return api.sendMessage(
+        "❌ Please provide a nickname.\nExample: botnicknamelock BotName",
+        threadID
+      );
     }
 
+    // CHANGE BOT NICKNAME (NO ADMIN REQUIRED)
+    await api.changeNickname(nickname, threadID, botID);
+
+    // SAVE
     await threadsData.set(threadID, {
       enable: true,
-      nicknames
-    }, "nicknameLockAll");
+      nickname
+    }, "botNicknameLock");
 
     api.sendMessage(
-      "🔒 Nicknames of all members are now locked.",
+      `🔒 Bot nickname locked to:\n${nickname}`,
       threadID
     );
   },
@@ -40,16 +45,19 @@ module.exports = {
     if (event.logMessageType !== "log:user-nickname") return;
 
     const threadID = event.threadID;
-    const data = await threadsData.get(threadID, "nicknameLockAll");
+    const botID = api.getCurrentUserID();
+    const data = await threadsData.get(threadID, "botNicknameLock");
 
     if (!data?.enable) return;
 
-    const uid = event.logMessageData?.participant_id;
-    if (!uid) return;
+    // CHECK IF BOT WAS TARGETED
+    if (event.logMessageData?.participant_id !== botID) return;
 
-    const lockedNick = data.nicknames[uid] ?? "";
-
-    // REVERT
-    await api.changeNickname(lockedNick, threadID, uid);
+    // REVERT BOT NICKNAME
+    await api.changeNickname(
+      data.nickname,
+      threadID,
+      botID
+    );
   }
 };
