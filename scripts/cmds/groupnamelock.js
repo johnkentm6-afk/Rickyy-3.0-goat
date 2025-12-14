@@ -1,9 +1,11 @@
 module.exports = {
-  name: "groupnamelock",
-  role: 2,
-  description: "Lock group name",
-  category: "UTILITY",
-  usage: "groupnamelock on <name> | off",
+  config: {
+    name: "groupnamelock",
+    role: 2,
+    category: "utility",
+    description: "Lock group name",
+    usage: "groupnamelock on <name> | off"
+  },
 
   onStart: async function ({ api, event, args, threadsData }) {
     const threadID = event.threadID;
@@ -34,11 +36,9 @@ module.exports = {
   onEvent: async function ({ api, event, threadsData }) {
     if (event.logMessageType !== "log:thread-name") return;
 
-    const threadID = event.threadID;
-    const lockData = await threadsData.get(threadID, "groupNameLock");
-
+    const lockData = await threadsData.get(event.threadID, "groupNameLock");
     if (!lockData?.enable || !lockData.name) return;
 
-    await api.setTitle(lockData.name, threadID);
+    await api.setTitle(lockData.name, event.threadID);
   }
 };
